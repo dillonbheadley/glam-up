@@ -1,0 +1,131 @@
+@layer reset;
+
+:root {
+  --accent-color: dodgerblue;
+  --gap: 1rem;
+  --radius: 7px;
+  font-family: "Helvetica Nue", Helvetica, sans-serif;
+}
+
+body {
+  display: grid;
+  grid-template-columns: 1fr;
+  place-content: center;
+  place-items: center;
+  min-block-size: 100dvh;
+  background-color: azure;
+}
+
+section {
+  background-color: lightcyan;
+  border: 1px solid darkcyan;
+  padding: calc(var(--gap) * 2);
+  border-radius: var(--radius);
+}
+
+h1 {
+  text-align: center;
+  font-size: 3rem;
+  text-align: pretty;
+  margin-bottom: var(--gap);
+}
+
+form {
+  display: grid;
+  gap: var(--gap);
+}
+
+label {
+  margin-top: var(--gap);
+  display: block;
+}
+
+input,
+textarea,
+select {
+  border: 1px solid darkcyan;
+  border-radius: var(--radius);
+  width: 100%;
+  display: block;
+  padding: var(--gap);
+}
+
+textarea {
+  width: calc(100% - var(--gap) * 2);
+}
+
+button {
+  justify-self: end;
+  background-color: lightseagreen;
+  padding: 1rem;
+  border-radius: var(--radius);
+}
+
+@layer reset {
+  :where(
+      :not(
+          audio,
+          canvas,
+          html,
+          iframe,
+          img,
+          summary,
+          svg,
+          svg *,
+          symbol,
+          * video,
+          :modal
+        )
+    ) {
+    all: unset;
+    display: revert;
+  }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  :focus {
+    outline: none;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 1px;
+  }
+  a {
+    text-decoration: revert;
+    cursor: revert;
+  }
+  button {
+    cursor: revert;
+    font: inherit;
+    touch-action: manipulation;
+  }
+  img {
+    max-inline-size: 100%;
+    display: block;
+  }
+  input,
+  meter,
+  pre,
+  progress,
+  select,
+  textarea {
+    all: revert;
+    font: inherit;
+    accent-color: var(--accent-color);
+  }
+  textarea {
+    vertical-align: top;
+  }
+  table {
+    border-collapse: collapse;
+  }
+  td,
+  th {
+    border: 1px solid;
+  }
+  :where([hidden]) {
+    display: none;
+  }
+}

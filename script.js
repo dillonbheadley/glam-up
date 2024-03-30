@@ -1,6 +1,9 @@
 document.addEventListener("click", (e) => {
   const url = e.target.getAttribute("href");
-  if (url && !url.startsWith("http")) {
+  if (
+    url &&
+    (url.startsWith(window.location.origin) || !url.startsWith("http"))
+  ) {
     const destination = new URL(url, window.location);
     if (destination.toString() !== window.location.href) {
       console.log("pushstate");
@@ -12,7 +15,10 @@ document.addEventListener("click", (e) => {
 
 document.addEventListener("submit", (e) => {
   const url = e.target.getAttribute("action");
-  if (url && url.startsWith("http://localhost")) {
+  if (
+    url &&
+    (url.startsWith(window.location.origin) || !url.startsWith("http"))
+  ) {
     spaUpgrade(e);
   }
 });

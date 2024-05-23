@@ -119,7 +119,9 @@ customElements.define(
       const transition = document.startViewTransition(() => {
         // oob swaps
         const elements = [
-          ...this.iframe.contentDocument.querySelectorAll("[data-oob-swap]"),
+          ...this.iframe.contentDocument.querySelectorAll(
+            "[data-oob-swap], [data-oob-target]"
+          ),
         ];
         // reverse order so we extract children before parents
         for (const element of elements.reverse()) {
@@ -128,6 +130,7 @@ customElements.define(
             document.getElementById(element.id);
           oobTarget?.[element.dataset.oobSwap || "replaceChildren"](element);
           delete element.dataset.oobSwap;
+          delete element.dataset.oobTarget;
         }
         // main swap
         return target[

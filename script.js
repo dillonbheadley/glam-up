@@ -80,6 +80,7 @@ customElements.define(
       e.stopPropagation();
       const url = e.target.getAttribute(this._eventToUrl[e.type]);
       if (url && this._isLocalUrl(url)) {
+        this.dataset.isLoading = true;
         if (
           e.type === "click" &&
           new URL(url, window.location).toString() !== window.location.href
@@ -98,18 +99,19 @@ customElements.define(
       iframe.name = "spa";
       iframe.hidden = true;
       iframe.onload = () => this.swapContent(iframe);
-      document.body.insertAdjacentElement("beforeend", iframe);
+      this.iframe = iframe;
+      document.body.insertAdjacentElement("beforeend", this.iframe);
     }
-    swapContent(frame) {
-      if (frame.contentWindow?.location?.href === "about:blank") {
+    swapContent() {
+      if (this.iframe.contentWindow?.location?.href === "about:blank") {
         return false;
       }
       const target =
         document.querySelector(this.dataset.target || null) || document.body;
       if (!target) {
+        this.afterSwap();
         return false;
       }
-
       // view transition patch
       document.startViewTransition =
         document.startViewTransition || ((fn) => fn());
@@ -117,33 +119,37 @@ customElements.define(
       const transition = document.startViewTransition(() => {
         // oob swaps
         const elements = [
-          ...frame.contentDocument.querySelectorAll("[data-oob-swap]"),
+          ...this.iframe.contentDocument.querySelectorAll("[data-oob-swap]"),
         ];
         // reverse order so we extract children before parents
         for (const element of elements.reverse()) {
-          document
-            .getElementById(element.id)
-            ?.[element.dataset.oobSwap || "replaceChildren"](element);
+          const oobTarget =
+            document.querySelector(element.dataset.oobTarget) ||
+            document.getElementById(element.id);
+          oobTarget?.[element.dataset.oobSwap || "replaceChildren"](element);
           delete element.dataset.oobSwap;
         }
-
         // main swap
         return target[
           // replaceChildren | replaceWith | prepend | append | before | after | remove
           this.dataset.swap || "replaceChildren"
         ](
           ...(this.dataset.select
-            ? frame.contentDocument.querySelectorAll(this.dataset.select)
-            : frame.contentDocument.body.children)
+            ? this.iframe.contentDocument.querySelectorAll(this.dataset.select)
+            : this.iframe.contentDocument.body.children)
         );
       });
       try {
         transition.updateCallbackDone?.then(() => {
-          frame.remove();
+          this.afterSwap();
         });
       } catch (error) {
-        frame.remove();
+        this.afterSwap();
       }
+    }
+    afterSwap() {
+      this.iframe?.remove();
+      delete this.dataset.isLoading;
     }
   }
 );

@@ -2,8 +2,8 @@ import { html } from "../utils.js";
 
 /**
  *
- * @param {Object} props description
- * @param {number} props.content inserted into the body element
+ * @param {object} props description
+ * @param {string} props.content inserted into the body element
  */
 export const Layout = ({ content }) => {
   return html`<!DOCTYPE html>
@@ -17,6 +17,10 @@ export const Layout = ({ content }) => {
         <meta name="view-transition" content="same-origin" />
       </head>
       <body>
+        <div id="test">test</div>
+        <hz-boost data-target="#test" data-swap="append" data-select="h1">
+          <a href="/">boost me</a>
+        </hz-boost>
         ${content}
       </body>
     </html>`;

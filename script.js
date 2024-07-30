@@ -65,12 +65,15 @@ customElements.define(
   "hz-boost",
   class HzBoost extends HTMLElement {
     connectedCallback() {
-      this.addEventListener("click", this);
-      this.addEventListener("submit", this);
+      this.abortController = new AbortController();
+      ["click", "submit"].forEach((event) =>
+        this.addEventListener(event, this, {
+          signal: this.abortController.signal,
+        })
+      );
     }
     disconnectedCallback() {
-      this.removeEventListener("click", this);
-      this.removeEventListener("submit", this);
+      this.abortController.abort();
     }
     handleEvent(e) {
       e.stopPropagation();

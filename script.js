@@ -72,17 +72,16 @@ customElements.define(
       this.removeEventListener("click", this);
       this.removeEventListener("submit", this);
     }
-    _eventToUrl = {
-      click: "href",
-      submit: "action",
-    };
     handleEvent(e) {
       e.stopPropagation();
-      const url = e.target.getAttribute(this._eventToUrl[e.type]);
-      if (url && this._isLocalUrl(url)) {
+      const actionUrl = e.target.getAttribute("action");
+      const hrefUrl = e.target.getAttribute("href");
+      const url = hrefUrl || actionUrl;
+
+      if (url && this.#isLocalUrl(url)) {
         this.dataset.isLoading = true;
         if (
-          e.type === "click" &&
+          hrefUrl &&
           new URL(url, window.location).toString() !== window.location.href
         ) {
           history.pushState(null, null, url);
@@ -90,8 +89,13 @@ customElements.define(
         this.spaUpgrade(e);
       }
     }
-    _isLocalUrl(url) {
-      return url?.startsWith(window.location.origin) || !url.startsWith("http");
+    #isLocalUrl(url) {
+      return (
+        url?.startsWith(window.location.origin) ||
+        !url.startsWith("http") ||
+        !url.startsWith("mailto") ||
+        !url.startsWith("sms")
+      );
     }
     spaUpgrade(e) {
       e.target.setAttribute("target", "spa");

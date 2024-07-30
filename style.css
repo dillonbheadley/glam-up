@@ -129,3 +129,9 @@ button {
     display: none;
   }
 }
+
+[data-is-loading] {
+  opacity: 0.5;
+  rotate: 360deg;
+  transition: all 1s;
+}
